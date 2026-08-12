@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark only">
+<meta name="theme-color" content="#000000">
+<title>Braunlage Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/ical.js@2.1.0/build/ical.min.js"></script>
+<style>
+  :root{
+    --bg:#000000;
+    --card:#0b0d10;
+    --card-border:rgba(255,255,255,0.08);
+    --accent:#3ddc97;
+    --accent2:#4fa3ff;
+    --accent3:#ff9f5a;
+    --text:#f2f4f6;
+    --muted:#8a92a0;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{ background:#000 !important; color-scheme:dark; }
+  html,body{
+    width:100%;height:100%;
+    background:#000 !important;
+    color:var(--text);
+    font-family:'Inter',system-ui,sans-serif;
+    overflow:hidden;
+    cursor:none;
+  }
+  body{
+    position:relative;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    padding:2.2vw 2.4vw;
+  }
+
+  /* Falls JavaScript nicht läuft: deutlicher Hinweis statt stiller weißer Fläche */
+  noscript{
+    position:fixed; inset:0; z-index:999;
+    background:#000; color:#ff9f5a;
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.6vw; text-align:center; padding:4vw;
+  }
+
+  /* Hochformat-Warnung – Dashboard ist für Querformat gebaut */
+  .rotate-warning{
+    display:none;
+    position:fixed; inset:0; z-index:998;
+    background:#000; color:#f2f4f6;
+    flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:8vw; gap:1.2rem;
+  }
+  @media (orientation:portrait){
+    .rotate-warning{ display:flex; }
+    main, header, footer{ display:none !important; }
+  }
+
+  @media print{
+    @page{ size:landscape; margin:0; }
+    html,body{
+      -webkit-print-color-adjust:exact !important;
+      print-color-adjust:exact !important;
+      color-adjust:exact !important;
+    }
+  }
+
+  /* ambient glow background */
+  .glow{
+    position:fixed;
+    border-radius:50%;
+    filter:blur(120px);
+    opacity:0.16;
+    z-index:0;
+    pointer-events:none;
+  }
+  .glow.a{ width:40vw; height:40vw; top:-15vw; left:-10vw; background:var(--accent2); }
+  .glow.b{ width:35vw; height:35vw; bottom:-15vw; right:-10vw; background:var(--accent); }
+  .glow.c{ width:25vw; height:25vw; top:40%; left:60%; background:var(--accent3); opacity:0.08; }
+
+  header{
+    position:relative;
+    z-index:1;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    padding-bottom:1.6vw;
+  }
+  .brand{
+    display:flex;
+    flex-direction:column;
+    gap:.3vw;
+  }
+  .brand .place{
+    font-size:1.4vw;
+    font-weight:600;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--accent);
+  }
+  .brand .sub{
+    font-size:1vw;
+    color:var(--muted);
+    font-weight:400;
+  }
+  .clockblock{
+    text-align:right;
+  }
+  .clock{
+    font-size:5.6vw;
+    font-weight:700;
+    line-height:1;
+    letter-spacing:.01em;
+    font-variant-numeric:tabular-nums;
+  }
+  .clock .secs{
+    font-size:2.4vw;
+    color:var(--muted);
+    font-weight:500;
+  }
+  .datestr{
+    font-size:1.3vw;
+    color:var(--muted);
+    margin-top:.4vw;
+    text-transform:capitalize;
+  }
+
+  /* Layout bewusst mit Flexbox statt CSS-Grid-Autoplacement gebaut,
+     damit es auch auf schwächeren/eingebauten Browsern (z.B. Beamer-App) zuverlässig
+     nicht überlappt. */
+  main{
+    position:relative;
+    z-index:1;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    gap:1.8vw;
+    min-height:0;
+  }
+  .row1{
+    display:flex;
+    flex-direction:row;
+    gap:1.8vw;
+    flex:1;
+    min-height:0;
+  }
+  .row1 > .card{ min-width:0; }
+  #weatherCard{ flex:1.05; }
+  #newsCard{ flex:1; }
+
+  .calendar-card{
+    flex:0 0 auto;
+    width:100%;
+    max-height:32vh;
+  }
+  .cal-list{
+    display:grid;
+    grid-template-columns:repeat(6,1fr);
+    gap:.8vw;
+  }
+  .cal-item{
+    background:rgba(255,255,255,0.03);
+    border:1px solid var(--card-border);
+    border-radius:1vw;
+    padding:.9vw .8vw;
+    display:flex;
+    flex-direction:column;
+    gap:.35vw;
+    min-height:0;
+  }
+  .cal-item .cal-date{
+    font-size:.9vw;
+    color:var(--accent3);
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+  }
+  .cal-item .cal-time{
+    font-size:.85vw;
+    color:var(--muted);
+  }
+  .cal-item .cal-title{
+    font-size:1.05vw;
+    font-weight:600;
+    line-height:1.25;
+    display:-webkit-box;
+    -webkit-line-clamp:3;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+  }
+  .cal-empty{
+    font-size:1vw;
+    color:var(--muted);
+  }
+
+  .card{
+    background:linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.01));
+    border:1px solid var(--card-border);
+    border-radius:1.4vw;
+    padding:1.8vw;
+    display:flex;
+    flex-direction:column;
+    min-height:0;
+    backdrop-filter:blur(10px);
+    box-shadow:0 0 0 1px rgba(255,255,255,0.02), 0 20px 60px rgba(0,0,0,0.5);
+  }
+
+  .card-title{
+    display:flex;
+    align-items:center;
+    gap:.6vw;
+    font-size:1.15vw;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:var(--muted);
+    margin-bottom:1.4vw;
+  }
+  .card-title .dot{
+    width:.55vw;height:.55vw;border-radius:50%;
+    background:var(--accent);
+    box-shadow:0 0 10px var(--accent);
+  }
+
+  /* WEATHER */
+  .weather-now{
+    display:flex;
+    align-items:center;
+    gap:1.6vw;
+    padding-bottom:1.6vw;
+    border-bottom:1px solid var(--card-border);
+    margin-bottom:1.6vw;
+  }
+  .weather-now .icon{
+    font-size:6.5vw;
+    line-height:1;
+    filter:drop-shadow(0 0 20px rgba(255,255,255,0.08));
+  }
+  .weather-now .temp{
+    font-size:5vw;
+    font-weight:700;
+    line-height:1;
+  }
+  .weather-now .temp sup{
+    font-size:2vw;
+    font-weight:500;
+    color:var(--muted);
+  }
+  .weather-now .desc{
+    font-size:1.3vw;
+    color:var(--text);
+    margin-top:.3vw;
+  }
+  .weather-now .meta{
+    font-size:1vw;
+    color:var(--muted);
+    margin-top:.4vw;
+    display:flex;
+    gap:1.2vw;
+  }
+
+  .forecast{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:.8vw;
+    flex:1;
+  }
+  .fday{
+    background:rgba(255,255,255,0.03);
+    border:1px solid var(--card-border);
+    border-radius:1vw;
+    padding:1vw .5vw;
+    text-align:center;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:.5vw;
+  }
+  .fday .d{
+    font-size:1vw;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    font-weight:600;
+  }
+  .fday .ic{ font-size:2.4vw; }
+  .fday .hi{ font-size:1.15vw; font-weight:700; }
+  .fday .lo{ font-size:1vw; color:var(--muted); }
+
+  /* NEWS */
+  .news-list{
+    display:flex;
+    flex-direction:column;
+    gap:1vw;
+    overflow:hidden;
+    flex:1;
+  }
+  .news-item{
+    padding:1vw 1.1vw;
+    border-radius:.9vw;
+    background:rgba(255,255,255,0.025);
+    border:1px solid var(--card-border);
+  }
+  .news-item .tag{
+    font-size:.85vw;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:var(--accent2);
+    margin-bottom:.35vw;
+  }
+  .news-item .headline{
+    font-size:1.25vw;
+    font-weight:600;
+    line-height:1.3;
+  }
+  .news-item .topline{
+    font-size:1vw;
+    color:var(--muted);
+    margin-top:.35vw;
+    line-height:1.35;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+  }
+
+  footer{
+    position:relative;
+    z-index:1;
+    margin-top:1.4vw;
+    display:flex;
+    justify-content:space-between;
+    font-size:.85vw;
+    color:var(--muted);
+  }
+
+  .updated{ opacity:.8; }
+</style>
+</head>
+<body>
+
+  <noscript>Dieses Dashboard braucht aktiviertes JavaScript. Bitte in den Browser-Einstellungen aktivieren und neu laden.</noscript>
+  <div class="rotate-warning">
+    <div style="font-size:4vw;">↻</div>
+    <div style="font-size:1.6vw;font-weight:600;">Bitte Gerät ins Querformat drehen</div>
+    <div style="font-size:1vw;color:#8a92a0;">Dieses Dashboard ist für die Anzeige im Querformat (Landscape) gebaut.</div>
+  </div>
+
+  <div class="glow a"></div>
+  <div class="glow b"></div>
+  <div class="glow c"></div>
+
+  <header>
+    <div class="brand">
+      <div class="place">Braunlage · Harz</div>
+      <div class="sub">Live Dashboard</div>
+    </div>
+    <div class="clockblock">
+      <div class="clock" id="clock">--:--<span class="secs" id="secs">:--</span></div>
+      <div class="datestr" id="datestr">wird geladen…</div>
+    </div>
+  </header>
+
+  <main>
+    <div class="row1">
+      <section class="card" id="weatherCard">
+        <div class="card-title"><span class="dot"></span> Wetter</div>
+        <div class="weather-now" id="weatherNow">
+          <div class="icon" id="wIcon">⋯</div>
+          <div>
+            <div class="temp" id="wTemp">--<sup>°C</sup></div>
+            <div class="desc" id="wDesc">Lade Wetterdaten…</div>
+            <div class="meta" id="wMeta"></div>
+          </div>
+        </div>
+        <div class="forecast" id="forecast"></div>
+      </section>
+
+      <section class="card" id="newsCard">
+        <div class="card-title"><span class="dot"></span> Nachrichten · Tagesschau</div>
+        <div class="news-list" id="newsList">
+          <div class="news-item"><div class="headline">Lade aktuelle Nachrichten…</div></div>
+        </div>
+      </section>
+    </div>
+
+    <section class="card calendar-card" id="calendarCard">
+      <div class="card-title"><span class="dot"></span> Kalender</div>
+      <div class="cal-list" id="calList">
+        <div class="cal-empty">Kalender wird geladen…</div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div>Automatische Aktualisierung · Wetter & Kalender alle 15 Min · News alle 5 Min</div>
+    <div class="updated" id="updated"></div>
+  </footer>
+
+<script>
+  // ---------- CLOCK ----------
+  const weekdays = ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+  const months = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+
+  function pad(n){ return n.toString().padStart(2,'0'); }
+
+  function updateClock(){
+    const now = new Date();
+    document.getElementById('clock').innerHTML =
+      pad(now.getHours()) + ':' + pad(now.getMinutes()) +
+      '<span class="secs">:' + pad(now.getSeconds()) + '</span>';
+    document.getElementById('datestr').textContent =
+      weekdays[now.getDay()] + ', ' + now.getDate() + '. ' + months[now.getMonth()] + ' ' + now.getFullYear();
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  // ---------- WEATHER ----------
+  const WMO = {
+    0:['☀️','Klarer Himmel'], 1:['🌤️','Überwiegend klar'], 2:['⛅','Teilweise bewölkt'], 3:['☁️','Bedeckt'],
+    45:['🌫️','Nebel'], 48:['🌫️','Reifnebel'],
+    51:['🌦️','Leichter Niesel'], 53:['🌦️','Niesel'], 55:['🌧️','Starker Niesel'],
+    56:['🌧️','Gefrierender Niesel'], 57:['🌧️','Starker gefr. Niesel'],
+    61:['🌧️','Leichter Regen'], 63:['🌧️','Regen'], 65:['🌧️','Starker Regen'],
+    66:['🌧️','Gefrierender Regen'], 67:['🌧️','Starker gefr. Regen'],
+    71:['🌨️','Leichter Schneefall'], 73:['🌨️','Schneefall'], 75:['❄️','Starker Schneefall'],
+    77:['❄️','Schneegriesel'],
+    80:['🌦️','Leichte Schauer'], 81:['🌧️','Schauer'], 82:['⛈️','Heftige Schauer'],
+    85:['🌨️','Schneeschauer'], 86:['❄️','Starke Schneeschauer'],
+    95:['⛈️','Gewitter'], 96:['⛈️','Gewitter mit Hagel'], 99:['⛈️','Schweres Gewitter']
+  };
+  function wmoInfo(code){ return WMO[code] || ['🌡️','Unbekannt']; }
+
+  const shortDay = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+
+  function fetchWithTimeout(url, ms=10000){
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), ms);
+    return fetch(url, { signal: ctrl.signal }).finally(() => clearTimeout(t));
+  }
+
+  async function loadWeather(){
+    try{
+      const url = 'https://api.open-meteo.com/v1/forecast?latitude=51.7280&longitude=10.5987&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Europe%2FBerlin&forecast_days=6';
+      const res = await fetchWithTimeout(url);
+      if(!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+
+      const cur = data.current;
+      const [icon, desc] = wmoInfo(cur.weather_code);
+      document.getElementById('wIcon').textContent = icon;
+      document.getElementById('wTemp').innerHTML = Math.round(cur.temperature_2m) + '<sup>°C</sup>';
+      document.getElementById('wDesc').textContent = desc;
+      document.getElementById('wMeta').innerHTML =
+        'Gefühlt ' + Math.round(cur.apparent_temperature) + '°C &nbsp;·&nbsp; Wind ' + Math.round(cur.wind_speed_10m) + ' km/h &nbsp;·&nbsp; Luftfeuchte ' + cur.relative_humidity_2m + '%';
+
+      const daily = data.daily;
+      const forecastEl = document.getElementById('forecast');
+      forecastEl.innerHTML = '';
+      for(let i=1;i<Math.min(daily.time.length,6);i++){
+        const d = new Date(daily.time[i]);
+        const [dicon] = wmoInfo(daily.weather_code[i]);
+        const div = document.createElement('div');
+        div.className = 'fday';
+        div.innerHTML = `
+          <div class="d">${shortDay[d.getDay()]}</div>
+          <div class="ic">${dicon}</div>
+          <div class="hi">${Math.round(daily.temperature_2m_max[i])}°</div>
+          <div class="lo">${Math.round(daily.temperature_2m_min[i])}°</div>
+        `;
+        forecastEl.appendChild(div);
+      }
+      bumpUpdated();
+    }catch(e){
+      const reason = e.name === 'AbortError' ? 'Zeitüberschreitung – keine Internetverbindung?' : e.message;
+      document.getElementById('wDesc').textContent = 'Wetter nicht verfügbar (' + reason + ')';
+      console.error(e);
+    }
+  }
+
+  // ---------- NEWS ----------
+  async function loadNews(){
+    try{
+      const res = await fetchWithTimeout('https://www.tagesschau.de/api2u/homepage/');
+      if(!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      const items = (data.news || []).filter(n => n.title && n.title.trim().length > 0).slice(0, 8);
+      const list = document.getElementById('newsList');
+      list.innerHTML = '';
+      items.forEach(n => {
+        const div = document.createElement('div');
+        div.className = 'news-item';
+        const tag = (n.tag || n.ressort || 'News').toString();
+        div.innerHTML = `
+          <div class="tag">${tag}</div>
+          <div class="headline">${n.title}</div>
+          ${n.firstSentence ? `<div class="topline">${n.firstSentence}</div>` : ''}
+        `;
+        list.appendChild(div);
+      });
+      if(items.length === 0){
+        list.innerHTML = '<div class="news-item"><div class="headline">Keine Nachrichten gefunden</div></div>';
+      }
+      bumpUpdated();
+    }catch(e){
+      const reason = e.name === 'AbortError' ? 'Zeitüberschreitung – keine Internetverbindung?' : e.message;
+      document.getElementById('newsList').innerHTML =
+        '<div class="news-item"><div class="headline">Nachrichten nicht verfügbar (' + reason + ')</div></div>';
+      console.error(e);
+    }
+  }
+
+  function bumpUpdated(){
+    const now = new Date();
+    document.getElementById('updated').textContent = 'Zuletzt aktualisiert: ' + pad(now.getHours()) + ':' + pad(now.getMinutes());
+  }
+
+  // ---------- KALENDER (Apple/iCloud über öffentlichen ICS-Feed) ----------
+  // 1) Auf dem Mac: Kalender-App -> rechte Maustaste auf den Kalender -> "Freigeben..." ->
+  //    "Öffentlicher Kalender" aktivieren -> Link kopieren (beginnt mit webcal://)
+  // 2) "webcal://" durch "https://" ersetzen und unten einfügen.
+  const ICS_URL = 'https://p107-caldav.icloud.com/published/2/MTc1MzE5MjM5MjExNzUzMQbjwGfcwPM04LZHstaxrikei_51Nbqb7snBpnldfDpv41nDEqlM4GmqcTbW6dYqoMDqQiS5nEyPePXPel2cEAM';
+
+  // Öffentliche CORS-Proxies, da iCloud-Feeds selbst kein CORS für Browser erlauben.
+  // Mehrere hintereinander probieren, falls einer down/langsam ist (allorigins hat
+  // regelmäßig Aussetzer).
+  function proxyUrls(url){
+    const enc = encodeURIComponent(url);
+    return [
+      'https://api.codetabs.com/v1/proxy?quest=' + enc,
+      'https://api.allorigins.win/raw?url=' + enc,
+      'https://corsproxy.io/?url=' + enc
+    ];
+  }
+
+  async function fetchViaProxies(url, ms=8000){
+    let lastErr;
+    for(const p of proxyUrls(url)){
+      try{
+        const res = await fetchWithTimeout(p, ms);
+        if(!res.ok) throw new Error('HTTP ' + res.status);
+        return res;
+      }catch(e){ lastErr = e; }
+    }
+    throw lastErr || new Error('Alle Proxies fehlgeschlagen');
+  }
+
+  function fmtCalDate(d){
+    return shortDay[d.getDay()] + ', ' + d.getDate() + '.' + (d.getMonth()+1) + '.';
+  }
+  function fmtCalTime(d, allDay){
+    if(allDay) return 'Ganztägig';
+    return pad(d.getHours()) + ':' + pad(d.getMinutes());
+  }
+
+  async function loadCalendar(){
+    const listEl = document.getElementById('calList');
+    if(!ICS_URL){
+      listEl.innerHTML = '<div class="cal-empty">Kein Kalender-Link hinterlegt. Trage in der Datei bei ICS_URL deinen öffentlichen iCloud-Kalenderlink ein.</div>';
+      return;
+    }
+    try{
+      const res = await fetchViaProxies(ICS_URL, 8000);
+      const text = await res.text();
+      const jcalData = ICAL.parse(text);
+      const comp = new ICAL.Component(jcalData);
+      const vevents = comp.getAllSubcomponents('vevent');
+
+      const now = new Date();
+      const horizon = new Date(now.getTime() + 14 * 24 * 3600 * 1000);
+      let occurrences = [];
+
+      vevents.forEach(ve => {
+        const event = new ICAL.Event(ve);
+        try{
+          if(event.isRecurring()){
+            const iterator = event.iterator();
+            let next, count = 0;
+            while((next = iterator.next()) && count < 100){
+              const occDate = next.toJSDate();
+              count++;
+              if(occDate > horizon) break;
+              if(occDate >= now){
+                occurrences.push({ start: occDate, summary: event.summary, allDay: event.startDate.isDate });
+              }
+            }
+          } else {
+            const occDate = event.startDate.toJSDate();
+            if(occDate >= now && occDate <= horizon){
+              occurrences.push({ start: occDate, summary: event.summary, allDay: event.startDate.isDate });
+            }
+          }
+        }catch(evErr){ /* einzelnes fehlerhaftes Event überspringen */ }
+      });
+
+      occurrences.sort((a,b) => a.start - b.start);
+      occurrences = occurrences.slice(0, 6);
+
+      listEl.innerHTML = '';
+      if(occurrences.length === 0){
+        listEl.innerHTML = '<div class="cal-empty">Keine anstehenden Termine in den nächsten 14 Tagen.</div>';
+      } else {
+        occurrences.forEach(o => {
+          const div = document.createElement('div');
+          div.className = 'cal-item';
+          div.innerHTML = `
+            <div class="cal-date">${fmtCalDate(o.start)}</div>
+            <div class="cal-time">${fmtCalTime(o.start, o.allDay)}</div>
+            <div class="cal-title">${o.summary || '(ohne Titel)'}</div>
+          `;
+          listEl.appendChild(div);
+        });
+      }
+      bumpUpdated();
+    }catch(e){
+      const reason = e.name === 'AbortError' ? 'Zeitüberschreitung' : e.message;
+      listEl.innerHTML = '<div class="cal-empty">Kalender nicht verfügbar (' + reason + ')</div>';
+      console.error(e);
+    }
+  }
+
+  loadWeather();
+  loadNews();
+  loadCalendar();
+  setInterval(loadWeather, 15 * 60 * 1000);
+  setInterval(loadNews, 5 * 60 * 1000);
+  setInterval(loadCalendar, 15 * 60 * 1000);
+
+  // Auto-scroll news list gently if content overflows (nice for beamer / no interaction)
+  // (Fix: pausiert am Rand statt bei jedem Tick einen neuen Timeout zu stapeln — das war der Bug.)
+  let scrollDir = 1;
+  let scrollPaused = false;
+  setInterval(() => {
+    const el = document.getElementById('newsList');
+    if(scrollPaused) return;
+    const maxScroll = el.scrollHeight - el.clientHeight;
+    if(maxScroll <= 0) return;
+    el.scrollTop += scrollDir;
+    const atBottom = el.scrollTop >= maxScroll - 1;
+    const atTop = el.scrollTop <= 0;
+    if(atBottom || atTop){
+      scrollPaused = true;
+      setTimeout(() => { scrollDir *= -1; scrollPaused = false; }, 3000);
+    }
+  }, 60);
+</script>
+</body>
+</html>
