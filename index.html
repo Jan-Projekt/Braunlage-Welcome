@@ -108,7 +108,8 @@
   }
   .datestr{
     font-size:1.1vw;
-    color:var(--muted);
+    color:var(--text);
+    font-weight:700;
     margin-top:.2vw;
     text-transform:capitalize;
   }
@@ -218,9 +219,11 @@
   .dayparts{
     display:grid;
     grid-template-columns:repeat(3,1fr);
+    grid-template-rows:1fr;
     gap:.6vw;
     margin-bottom:.6vw;
-    flex:0 0 auto;
+    flex:1;
+    min-height:0;
   }
   .daypart{
     background:rgba(255,255,255,0.03);
@@ -232,23 +235,25 @@
     flex-direction:column;
     align-items:center;
     justify-content:center;
-    gap:.25vw;
+    gap:.4vw;
   }
   .daypart .d{
-    font-size:.8vw;
+    font-size:.9vw;
     color:var(--accent3);
     text-transform:uppercase;
     letter-spacing:.05em;
     font-weight:600;
   }
-  .daypart .ic{ font-size:1.5vw; }
-  .daypart .hi{ font-size:.95vw; font-weight:700; }
+  .daypart .ic{ font-size:2.6vw; }
+  .daypart .hi{ font-size:1.3vw; font-weight:700; }
 
   .forecast{
     display:grid;
     grid-template-columns:repeat(3,1fr);
+    grid-template-rows:1fr;
     gap:.6vw;
-    flex:0 0 auto;
+    flex:1;
+    min-height:0;
   }
   .fday{
     background:rgba(255,255,255,0.03);
@@ -260,18 +265,18 @@
     flex-direction:column;
     align-items:center;
     justify-content:center;
-    gap:.3vw;
+    gap:.4vw;
   }
   .fday .d{
-    font-size:.85vw;
+    font-size:.95vw;
     color:var(--muted);
     text-transform:uppercase;
     letter-spacing:.05em;
     font-weight:600;
   }
-  .fday .ic{ font-size:1.9vw; }
-  .fday .hi{ font-size:1.05vw; font-weight:700; }
-  .fday .lo{ font-size:.9vw; color:var(--muted); }
+  .fday .ic{ font-size:2.9vw; }
+  .fday .hi{ font-size:1.4vw; font-weight:700; }
+  .fday .lo{ font-size:1.1vw; color:var(--muted); }
 
   /* KAMERA (rechts in row1) */
   .cam-wrap{
