@@ -144,7 +144,7 @@
   }
   .row1 > .card{ min-width:0; }
   #weatherCard{ flex:1.05; }
-  #newsCard{ flex:1; }
+  #cameraCard{ flex:1; }
 
   .card{
     background:linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.01));
@@ -250,57 +250,14 @@
   .fday .hi{ font-size:1.15vw; font-weight:700; }
   .fday .lo{ font-size:1vw; color:var(--muted); }
 
-  /* NEWS */
-  .news-list{
-    display:flex;
-    flex-direction:column;
-    gap:1vw;
-    overflow:hidden;
-    flex:1;
-  }
-  .news-item{
-    padding:1vw 1.1vw;
-    border-radius:.9vw;
-    background:rgba(255,255,255,0.025);
-    border:1px solid var(--card-border);
-  }
-  .news-item .tag{
-    font-size:.85vw;
-    font-weight:700;
-    text-transform:uppercase;
-    letter-spacing:.06em;
-    color:var(--accent2);
-    margin-bottom:.35vw;
-  }
-  .news-item .headline{
-    font-size:1.25vw;
-    font-weight:600;
-    line-height:1.3;
-  }
-  .news-item .topline{
-    font-size:1vw;
-    color:var(--muted);
-    margin-top:.35vw;
-    line-height:1.35;
-    display:-webkit-box;
-    -webkit-line-clamp:2;
-    -webkit-box-orient:vertical;
-    overflow:hidden;
-  }
-
-  /* KAMERA */
-  .camera-card{
-    flex:0 0 auto;
-    width:100%;
-    max-height:34vh;
-  }
+  /* KAMERA (rechts in row1) */
   .cam-wrap{
     position:relative;
     flex:1;
     min-height:0;
     border-radius:1vw;
     overflow:hidden;
-    background:#050505;
+    background:#000;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -308,22 +265,77 @@
   .cam-wrap img{
     width:100%;
     height:100%;
-    object-fit:cover;
+    object-fit:contain;  /* zeigt das ganze Bild unverzerrt, Balken statt Beschnitt */
     display:block;
-  }
-  .cam-fallback{
-    font-size:1vw;
-    color:var(--muted);
   }
   .cam-badge{
     position:absolute;
-    top:.7vw; right:.7vw;
+    bottom:.7vw; right:.7vw;
     background:rgba(0,0,0,0.55);
     border:1px solid rgba(255,255,255,0.12);
     border-radius:.6vw;
     padding:.35vw .7vw;
     font-size:.8vw;
     color:var(--muted);
+  }
+
+  /* NEWS-TICKER (unten, läuft durch) */
+  .ticker-card{
+    flex:0 0 auto;
+    width:100%;
+    background:linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.01));
+    border:1px solid var(--card-border);
+    border-radius:1.2vw;
+    padding:1vw 0;
+    display:flex;
+    align-items:center;
+    gap:1vw;
+    overflow:hidden;
+  }
+  .ticker-label{
+    flex:0 0 auto;
+    padding:0 1.4vw;
+    font-size:1vw;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:var(--accent2);
+    border-right:1px solid var(--card-border);
+    white-space:nowrap;
+  }
+  .ticker-viewport{
+    flex:1;
+    min-width:0;
+    overflow:hidden;
+  }
+  .ticker-track{
+    display:flex;
+    align-items:center;
+    width:max-content;
+    animation:ticker-ltr 55s linear infinite;
+  }
+  .ticker-track.paused{ animation-play-state:paused; }
+  @keyframes ticker-ltr{
+    from{ transform:translateX(-50%); }
+    to{ transform:translateX(0%); }
+  }
+  .ticker-item{
+    display:inline-flex;
+    align-items:center;
+    gap:.5vw;
+    font-size:1.15vw;
+    white-space:nowrap;
+    padding-right:3vw;
+  }
+  .ticker-item .tag{
+    color:var(--accent2);
+    font-weight:700;
+    text-transform:uppercase;
+    font-size:.8vw;
+  }
+  .ticker-item .sep{
+    color:var(--muted);
+    padding-right:3vw;
   }
 
   footer{
@@ -355,7 +367,7 @@
   <header>
     <div class="brand">
       <div class="place">Braunlage · Harz</div>
-      <div class="sub">Live Dashboard</div>
+      <div class="sub" id="greeting">Live Dashboard</div>
     </div>
     <div class="clockblock">
       <div class="clock" id="clock">--:--</div>
@@ -378,21 +390,23 @@
         <div class="forecast" id="forecast"></div>
       </section>
 
-      <section class="card" id="newsCard">
-        <div class="card-title"><span class="dot"></span> Nachrichten · Tagesschau</div>
-        <div class="news-list" id="newsList">
-          <div class="news-item"><div class="headline">Lade aktuelle Nachrichten…</div></div>
+      <section class="card" id="cameraCard">
+        <div class="card-title"><span class="dot live"></span> Live-Kamera · Volksbank Braunlage</div>
+        <div class="cam-wrap">
+          <img id="camImg" alt="Live-Webcam Braunlage (Volksbank, Blick zum Wurmberg)">
+          <div class="cam-badge" id="camUpdated">wird geladen…</div>
         </div>
       </section>
     </div>
 
-    <section class="card camera-card" id="cameraCard">
-      <div class="card-title"><span class="dot live"></span> Live-Kamera · Volksbank Braunlage</div>
-      <div class="cam-wrap">
-        <img id="camImg" alt="Live-Webcam Braunlage (Volksbank, Blick zum Wurmberg)">
-        <div class="cam-badge" id="camUpdated">wird geladen…</div>
+    <div class="ticker-card" id="tickerCard">
+      <div class="ticker-label">Tagesschau</div>
+      <div class="ticker-viewport">
+        <div class="ticker-track" id="tickerTrack">
+          <span class="ticker-item">Lade aktuelle Nachrichten…</span>
+        </div>
       </div>
-    </section>
+    </div>
   </main>
 
   <footer>
@@ -407,11 +421,18 @@
 
   function pad(n){ return n.toString().padStart(2,'0'); }
 
+  function greetingFor(hour){
+    if(hour >= 5 && hour < 11) return 'Guten Morgen, Jan';
+    if(hour >= 11 && hour < 18) return 'Hallo, Jan';
+    return 'Guten Abend, Jan';
+  }
+
   function updateClock(){
     const now = new Date();
     document.getElementById('clock').textContent = pad(now.getHours()) + ':' + pad(now.getMinutes());
     document.getElementById('datestr').textContent =
       weekdays[now.getDay()] + ', ' + now.getDate() + '. ' + months[now.getMonth()] + ' ' + now.getFullYear();
+    document.getElementById('greeting').textContent = greetingFor(now.getHours());
   }
   updateClock();
   setInterval(updateClock, 1000);
@@ -479,34 +500,33 @@
     }
   }
 
-  // ---------- NEWS ----------
+  // ---------- NEWS-TICKER ----------
   async function loadNews(){
     try{
       const res = await fetchWithTimeout('https://www.tagesschau.de/api2u/homepage/');
       if(!res.ok) throw new Error('HTTP ' + res.status);
       const data = await res.json();
-      const items = (data.news || []).filter(n => n.title && n.title.trim().length > 0).slice(0, 8);
-      const list = document.getElementById('newsList');
-      list.innerHTML = '';
-      items.forEach(n => {
-        const div = document.createElement('div');
-        div.className = 'news-item';
-        const tag = (n.tag || n.ressort || 'News').toString();
-        div.innerHTML = `
-          <div class="tag">${tag}</div>
-          <div class="headline">${n.title}</div>
-          ${n.firstSentence ? `<div class="topline">${n.firstSentence}</div>` : ''}
-        `;
-        list.appendChild(div);
-      });
+      const items = (data.news || []).filter(n => n.title && n.title.trim().length > 0).slice(0, 10);
+      const track = document.getElementById('tickerTrack');
+
       if(items.length === 0){
-        list.innerHTML = '<div class="news-item"><div class="headline">Keine Nachrichten gefunden</div></div>';
+        track.innerHTML = '<span class="ticker-item">Keine Nachrichten gefunden</span>';
+        return;
       }
+
+      const single = items.map(n => {
+        const tag = (n.tag || n.ressort || 'News').toString();
+        return `<span class="ticker-item"><span class="tag">${tag}</span> ${n.title}</span><span class="sep">●</span>`;
+      }).join('');
+
+      // Inhalt zweimal hintereinander für nahtlose Endlosschleife (CSS-Animation
+      // verschiebt um -50%, danach ist Kopie 2 exakt an der Stelle von Kopie 1).
+      track.innerHTML = single + single;
       bumpUpdated();
     }catch(e){
       const reason = e.name === 'AbortError' ? 'Zeitüberschreitung – keine Internetverbindung?' : e.message;
-      document.getElementById('newsList').innerHTML =
-        '<div class="news-item"><div class="headline">Nachrichten nicht verfügbar (' + reason + ')</div></div>';
+      document.getElementById('tickerTrack').innerHTML =
+        '<span class="ticker-item">Nachrichten nicht verfügbar (' + reason + ')</span>';
       console.error(e);
     }
   }
@@ -519,7 +539,8 @@
   // ---------- LIVE-KAMERA (Volksbank Braunlage, Blick zum Wurmberg) ----------
   // Quelle: https://www.vbbraunlage.de/meine-bank/webcam.html -> Standbild, wird von der
   // Quelle selbst regelmäßig aktualisiert. Wir hängen einen Cache-Buster an, damit der
-  // Browser nicht das alte Bild aus dem Cache zeigt.
+  // Browser nicht das alte Bild aus dem Cache zeigt. object-fit:contain in CSS sorgt
+  // dafür, dass das Bild unverzerrt & vollständig angezeigt wird (Balken statt Beschnitt).
   const CAM_URL = 'https://www.meinbraunlage.de/wc_vbbrl.jpg';
 
   function loadCamera(){
@@ -542,24 +563,6 @@
   setInterval(loadWeather, 15 * 60 * 1000);
   setInterval(loadNews, 5 * 60 * 1000);
   setInterval(loadCamera, 60 * 1000);
-
-  // Auto-scroll news list gently if content overflows (nice for beamer / no interaction)
-  // (Fix: pausiert am Rand statt bei jedem Tick einen neuen Timeout zu stapeln — das war der Bug.)
-  let scrollDir = 1;
-  let scrollPaused = false;
-  setInterval(() => {
-    const el = document.getElementById('newsList');
-    if(scrollPaused) return;
-    const maxScroll = el.scrollHeight - el.clientHeight;
-    if(maxScroll <= 0) return;
-    el.scrollTop += scrollDir;
-    const atBottom = el.scrollTop >= maxScroll - 1;
-    const atTop = el.scrollTop <= 0;
-    if(atBottom || atTop){
-      scrollPaused = true;
-      setTimeout(() => { scrollDir *= -1; scrollPaused = false; }, 3000);
-    }
-  }, 60);
 </script>
 </body>
 </html>
