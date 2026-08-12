@@ -9,7 +9,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/ical.js@2.1.0/build/ical.min.js"></script>
 <style>
   :root{
     --bg:#000000;
@@ -117,11 +116,6 @@
     letter-spacing:.01em;
     font-variant-numeric:tabular-nums;
   }
-  .clock .secs{
-    font-size:2.4vw;
-    color:var(--muted);
-    font-weight:500;
-  }
   .datestr{
     font-size:1.3vw;
     color:var(--muted);
@@ -152,51 +146,6 @@
   #weatherCard{ flex:1.05; }
   #newsCard{ flex:1; }
 
-  .calendar-card{
-    flex:0 0 auto;
-    width:100%;
-    max-height:32vh;
-  }
-  .cal-list{
-    display:grid;
-    grid-template-columns:repeat(6,1fr);
-    gap:.8vw;
-  }
-  .cal-item{
-    background:rgba(255,255,255,0.03);
-    border:1px solid var(--card-border);
-    border-radius:1vw;
-    padding:.9vw .8vw;
-    display:flex;
-    flex-direction:column;
-    gap:.35vw;
-    min-height:0;
-  }
-  .cal-item .cal-date{
-    font-size:.9vw;
-    color:var(--accent3);
-    font-weight:700;
-    text-transform:uppercase;
-    letter-spacing:.05em;
-  }
-  .cal-item .cal-time{
-    font-size:.85vw;
-    color:var(--muted);
-  }
-  .cal-item .cal-title{
-    font-size:1.05vw;
-    font-weight:600;
-    line-height:1.25;
-    display:-webkit-box;
-    -webkit-line-clamp:3;
-    -webkit-box-orient:vertical;
-    overflow:hidden;
-  }
-  .cal-empty{
-    font-size:1vw;
-    color:var(--muted);
-  }
-
   .card{
     background:linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.01));
     border:1px solid var(--card-border);
@@ -224,6 +173,15 @@
     width:.55vw;height:.55vw;border-radius:50%;
     background:var(--accent);
     box-shadow:0 0 10px var(--accent);
+  }
+  .card-title .dot.live{
+    background:#ff4d4f;
+    box-shadow:0 0 10px #ff4d4f;
+    animation:pulse 2s infinite;
+  }
+  @keyframes pulse{
+    0%,100%{ opacity:1; }
+    50%{ opacity:.35; }
   }
 
   /* WEATHER */
@@ -330,6 +288,44 @@
     overflow:hidden;
   }
 
+  /* KAMERA */
+  .camera-card{
+    flex:0 0 auto;
+    width:100%;
+    max-height:34vh;
+  }
+  .cam-wrap{
+    position:relative;
+    flex:1;
+    min-height:0;
+    border-radius:1vw;
+    overflow:hidden;
+    background:#050505;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .cam-wrap img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+  .cam-fallback{
+    font-size:1vw;
+    color:var(--muted);
+  }
+  .cam-badge{
+    position:absolute;
+    top:.7vw; right:.7vw;
+    background:rgba(0,0,0,0.55);
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:.6vw;
+    padding:.35vw .7vw;
+    font-size:.8vw;
+    color:var(--muted);
+  }
+
   footer{
     position:relative;
     z-index:1;
@@ -362,7 +358,7 @@
       <div class="sub">Live Dashboard</div>
     </div>
     <div class="clockblock">
-      <div class="clock" id="clock">--:--<span class="secs" id="secs">:--</span></div>
+      <div class="clock" id="clock">--:--</div>
       <div class="datestr" id="datestr">wird geladen…</div>
     </div>
   </header>
@@ -390,16 +386,17 @@
       </section>
     </div>
 
-    <section class="card calendar-card" id="calendarCard">
-      <div class="card-title"><span class="dot"></span> Kalender</div>
-      <div class="cal-list" id="calList">
-        <div class="cal-empty">Kalender wird geladen…</div>
+    <section class="card camera-card" id="cameraCard">
+      <div class="card-title"><span class="dot live"></span> Live-Kamera · Volksbank Braunlage</div>
+      <div class="cam-wrap">
+        <img id="camImg" alt="Live-Webcam Braunlage (Volksbank, Blick zum Wurmberg)">
+        <div class="cam-badge" id="camUpdated">wird geladen…</div>
       </div>
     </section>
   </main>
 
   <footer>
-    <div>Automatische Aktualisierung · Wetter & Kalender alle 15 Min · News alle 5 Min</div>
+    <div>Automatische Aktualisierung · Wetter alle 15 Min · News alle 5 Min · Kamera alle 60 Sek</div>
     <div class="updated" id="updated"></div>
   </footer>
 
@@ -412,9 +409,7 @@
 
   function updateClock(){
     const now = new Date();
-    document.getElementById('clock').innerHTML =
-      pad(now.getHours()) + ':' + pad(now.getMinutes()) +
-      '<span class="secs">:' + pad(now.getSeconds()) + '</span>';
+    document.getElementById('clock').textContent = pad(now.getHours()) + ':' + pad(now.getMinutes());
     document.getElementById('datestr').textContent =
       weekdays[now.getDay()] + ', ' + now.getDate() + '. ' + months[now.getMonth()] + ' ' + now.getFullYear();
   }
@@ -521,116 +516,32 @@
     document.getElementById('updated').textContent = 'Zuletzt aktualisiert: ' + pad(now.getHours()) + ':' + pad(now.getMinutes());
   }
 
-  // ---------- KALENDER (Apple/iCloud über öffentlichen ICS-Feed) ----------
-  // 1) Auf dem Mac: Kalender-App -> rechte Maustaste auf den Kalender -> "Freigeben..." ->
-  //    "Öffentlicher Kalender" aktivieren -> Link kopieren (beginnt mit webcal://)
-  // 2) "webcal://" durch "https://" ersetzen und unten einfügen.
-  const ICS_URL = 'https://p107-caldav.icloud.com/published/2/MTc1MzE5MjM5MjExNzUzMQbjwGfcwPM04LZHstaxrikei_51Nbqb7snBpnldfDpv41nDEqlM4GmqcTbW6dYqoMDqQiS5nEyPePXPel2cEAM';
+  // ---------- LIVE-KAMERA (Volksbank Braunlage, Blick zum Wurmberg) ----------
+  // Quelle: https://www.vbbraunlage.de/meine-bank/webcam.html -> Standbild, wird von der
+  // Quelle selbst regelmäßig aktualisiert. Wir hängen einen Cache-Buster an, damit der
+  // Browser nicht das alte Bild aus dem Cache zeigt.
+  const CAM_URL = 'https://www.meinbraunlage.de/wc_vbbrl.jpg';
 
-  // Öffentliche CORS-Proxies, da iCloud-Feeds selbst kein CORS für Browser erlauben.
-  // Mehrere hintereinander probieren, falls einer down/langsam ist (allorigins hat
-  // regelmäßig Aussetzer).
-  function proxyUrls(url){
-    const enc = encodeURIComponent(url);
-    return [
-      'https://api.codetabs.com/v1/proxy?quest=' + enc,
-      'https://api.allorigins.win/raw?url=' + enc,
-      'https://corsproxy.io/?url=' + enc
-    ];
-  }
-
-  async function fetchViaProxies(url, ms=8000){
-    let lastErr;
-    for(const p of proxyUrls(url)){
-      try{
-        const res = await fetchWithTimeout(p, ms);
-        if(!res.ok) throw new Error('HTTP ' + res.status);
-        return res;
-      }catch(e){ lastErr = e; }
-    }
-    throw lastErr || new Error('Alle Proxies fehlgeschlagen');
-  }
-
-  function fmtCalDate(d){
-    return shortDay[d.getDay()] + ', ' + d.getDate() + '.' + (d.getMonth()+1) + '.';
-  }
-  function fmtCalTime(d, allDay){
-    if(allDay) return 'Ganztägig';
-    return pad(d.getHours()) + ':' + pad(d.getMinutes());
-  }
-
-  async function loadCalendar(){
-    const listEl = document.getElementById('calList');
-    if(!ICS_URL){
-      listEl.innerHTML = '<div class="cal-empty">Kein Kalender-Link hinterlegt. Trage in der Datei bei ICS_URL deinen öffentlichen iCloud-Kalenderlink ein.</div>';
-      return;
-    }
-    try{
-      const res = await fetchViaProxies(ICS_URL, 8000);
-      const text = await res.text();
-      const jcalData = ICAL.parse(text);
-      const comp = new ICAL.Component(jcalData);
-      const vevents = comp.getAllSubcomponents('vevent');
-
-      const now = new Date();
-      const horizon = new Date(now.getTime() + 14 * 24 * 3600 * 1000);
-      let occurrences = [];
-
-      vevents.forEach(ve => {
-        const event = new ICAL.Event(ve);
-        try{
-          if(event.isRecurring()){
-            const iterator = event.iterator();
-            let next, count = 0;
-            while((next = iterator.next()) && count < 100){
-              const occDate = next.toJSDate();
-              count++;
-              if(occDate > horizon) break;
-              if(occDate >= now){
-                occurrences.push({ start: occDate, summary: event.summary, allDay: event.startDate.isDate });
-              }
-            }
-          } else {
-            const occDate = event.startDate.toJSDate();
-            if(occDate >= now && occDate <= horizon){
-              occurrences.push({ start: occDate, summary: event.summary, allDay: event.startDate.isDate });
-            }
-          }
-        }catch(evErr){ /* einzelnes fehlerhaftes Event überspringen */ }
-      });
-
-      occurrences.sort((a,b) => a.start - b.start);
-      occurrences = occurrences.slice(0, 6);
-
-      listEl.innerHTML = '';
-      if(occurrences.length === 0){
-        listEl.innerHTML = '<div class="cal-empty">Keine anstehenden Termine in den nächsten 14 Tagen.</div>';
-      } else {
-        occurrences.forEach(o => {
-          const div = document.createElement('div');
-          div.className = 'cal-item';
-          div.innerHTML = `
-            <div class="cal-date">${fmtCalDate(o.start)}</div>
-            <div class="cal-time">${fmtCalTime(o.start, o.allDay)}</div>
-            <div class="cal-title">${o.summary || '(ohne Titel)'}</div>
-          `;
-          listEl.appendChild(div);
-        });
-      }
-      bumpUpdated();
-    }catch(e){
-      const reason = e.name === 'AbortError' ? 'Zeitüberschreitung' : e.message;
-      listEl.innerHTML = '<div class="cal-empty">Kalender nicht verfügbar (' + reason + ')</div>';
-      console.error(e);
-    }
+  function loadCamera(){
+    const img = document.getElementById('camImg');
+    const badge = document.getElementById('camUpdated');
+    const test = new Image();
+    test.onload = () => {
+      img.src = test.src;
+      badge.textContent = 'Aktualisiert: ' + pad(new Date().getHours()) + ':' + pad(new Date().getMinutes());
+    };
+    test.onerror = () => {
+      badge.textContent = 'Kamera nicht erreichbar';
+    };
+    test.src = CAM_URL + (CAM_URL.includes('?') ? '&' : '?') + 't=' + Date.now();
   }
 
   loadWeather();
   loadNews();
-  loadCalendar();
+  loadCamera();
   setInterval(loadWeather, 15 * 60 * 1000);
   setInterval(loadNews, 5 * 60 * 1000);
-  setInterval(loadCalendar, 15 * 60 * 1000);
+  setInterval(loadCamera, 60 * 1000);
 
   // Auto-scroll news list gently if content overflows (nice for beamer / no interaction)
   // (Fix: pausiert am Rand statt bei jedem Tick einen neuen Timeout zu stapeln — das war der Bug.)
