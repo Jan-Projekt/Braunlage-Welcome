@@ -87,7 +87,8 @@
     display:flex;
     justify-content:flex-end;
     align-items:flex-end;
-    padding-bottom:1.6vw;
+    padding-bottom:1.1vw;
+    flex:0 0 auto;
   }
   .clockblock{
     text-align:right;
@@ -121,13 +122,13 @@
     flex:1;
     display:flex;
     flex-direction:column;
-    gap:1.8vw;
+    gap:1.2vw;
     min-height:0;
   }
   .row1{
     display:flex;
     flex-direction:row;
-    gap:1.8vw;
+    gap:1.4vw;
     flex:1;
     min-height:0;
   }
@@ -139,10 +140,11 @@
     background:linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.01));
     border:1px solid var(--card-border);
     border-radius:1.4vw;
-    padding:1.8vw;
+    padding:1.6vw 1.8vw;
     display:flex;
     flex-direction:column;
     min-height:0;
+    overflow:hidden; /* Sicherheitsnetz: Inhalt wird notfalls sauber abgeschnitten statt zu überlappen */
     backdrop-filter:blur(10px);
     box-shadow:0 0 0 1px rgba(255,255,255,0.02), 0 20px 60px rgba(0,0,0,0.5);
   }
@@ -151,12 +153,13 @@
     display:flex;
     align-items:center;
     gap:.6vw;
-    font-size:1.15vw;
+    font-size:1.1vw;
     font-weight:600;
     text-transform:uppercase;
     letter-spacing:.08em;
     color:var(--muted);
-    margin-bottom:1.4vw;
+    margin-bottom:1vw;
+    flex:0 0 auto;
   }
   .card-title .dot{
     width:.55vw;height:.55vw;border-radius:50%;
@@ -177,35 +180,36 @@
   .weather-now{
     display:flex;
     align-items:center;
-    gap:1.6vw;
-    padding-bottom:1.6vw;
+    gap:1.3vw;
+    padding-bottom:1vw;
     border-bottom:1px solid var(--card-border);
-    margin-bottom:1.6vw;
+    margin-bottom:1vw;
+    flex:0 0 auto;
   }
   .weather-now .icon{
-    font-size:8vw;
+    font-size:6.8vw;
     line-height:1;
     filter:drop-shadow(0 0 20px rgba(255,255,255,0.08));
   }
   .weather-now .temp{
-    font-size:6.5vw;
+    font-size:5.6vw;
     font-weight:700;
     line-height:1;
   }
   .weather-now .temp sup{
-    font-size:2.4vw;
+    font-size:2vw;
     font-weight:500;
     color:var(--muted);
   }
   .weather-now .desc{
-    font-size:1.6vw;
+    font-size:1.35vw;
     color:var(--text);
-    margin-top:.3vw;
+    margin-top:.25vw;
   }
   .weather-now .meta{
-    font-size:1.05vw;
+    font-size:.95vw;
     color:var(--muted);
-    margin-top:.5vw;
+    margin-top:.4vw;
     display:flex;
     gap:1.2vw;
   }
@@ -214,59 +218,60 @@
   .dayparts{
     display:grid;
     grid-template-columns:repeat(3,1fr);
-    gap:.8vw;
-    margin-bottom:.8vw;
+    gap:.6vw;
+    margin-bottom:.6vw;
+    flex:0 0 auto;
   }
   .daypart{
     background:rgba(255,255,255,0.03);
     border:1px solid var(--card-border);
-    border-radius:1vw;
-    padding:.8vw .5vw;
+    border-radius:.8vw;
+    padding:.5vw .5vw;
     text-align:center;
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
-    gap:.35vw;
+    gap:.25vw;
   }
   .daypart .d{
-    font-size:.9vw;
+    font-size:.8vw;
     color:var(--accent3);
     text-transform:uppercase;
     letter-spacing:.05em;
     font-weight:600;
   }
-  .daypart .ic{ font-size:1.9vw; }
-  .daypart .hi{ font-size:1.05vw; font-weight:700; }
+  .daypart .ic{ font-size:1.5vw; }
+  .daypart .hi{ font-size:.95vw; font-weight:700; }
 
   .forecast{
     display:grid;
     grid-template-columns:repeat(3,1fr);
-    gap:.8vw;
-    flex:1;
+    gap:.6vw;
+    flex:0 0 auto;
   }
   .fday{
     background:rgba(255,255,255,0.03);
     border:1px solid var(--card-border);
-    border-radius:1vw;
-    padding:1vw .5vw;
+    border-radius:.8vw;
+    padding:.6vw .5vw;
     text-align:center;
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
-    gap:.5vw;
+    gap:.3vw;
   }
   .fday .d{
-    font-size:1vw;
+    font-size:.85vw;
     color:var(--muted);
     text-transform:uppercase;
     letter-spacing:.05em;
     font-weight:600;
   }
-  .fday .ic{ font-size:2.6vw; }
-  .fday .hi{ font-size:1.3vw; font-weight:700; }
-  .fday .lo{ font-size:1.1vw; color:var(--muted); }
+  .fday .ic{ font-size:1.9vw; }
+  .fday .hi{ font-size:1.05vw; font-weight:700; }
+  .fday .lo{ font-size:.9vw; color:var(--muted); }
 
   /* KAMERA (rechts in row1) */
   .cam-wrap{
@@ -304,11 +309,12 @@
     background:linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.01));
     border:1px solid var(--card-border);
     border-radius:1.2vw;
-    padding:1vw 0;
+    padding:.7vw 0;
     display:flex;
     align-items:center;
     gap:1vw;
     overflow:hidden;
+    flex:0 0 auto;
   }
   .ticker-label{
     flex:0 0 auto;
@@ -359,7 +365,8 @@
   footer{
     position:relative;
     z-index:1;
-    margin-top:1.4vw;
+    margin-top:1vw;
+    flex:0 0 auto;
     display:flex;
     justify-content:space-between;
     font-size:.85vw;
