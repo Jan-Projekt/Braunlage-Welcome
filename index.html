@@ -85,26 +85,9 @@
     position:relative;
     z-index:1;
     display:flex;
-    justify-content:space-between;
+    justify-content:flex-end;
     align-items:flex-end;
     padding-bottom:1.6vw;
-  }
-  .brand{
-    display:flex;
-    flex-direction:column;
-    gap:.3vw;
-  }
-  .brand .place{
-    font-size:1.4vw;
-    font-weight:600;
-    letter-spacing:.08em;
-    text-transform:uppercase;
-    color:var(--accent);
-  }
-  .brand .sub{
-    font-size:1vw;
-    color:var(--muted);
-    font-weight:400;
   }
   .clockblock{
     text-align:right;
@@ -116,10 +99,16 @@
     letter-spacing:.01em;
     font-variant-numeric:tabular-nums;
   }
+  .greeting{
+    font-size:1.5vw;
+    font-weight:600;
+    color:var(--accent);
+    margin-top:.5vw;
+  }
   .datestr{
-    font-size:1.3vw;
+    font-size:1.1vw;
     color:var(--muted);
-    margin-top:.4vw;
+    margin-top:.2vw;
     text-transform:capitalize;
   }
 
@@ -143,7 +132,7 @@
     min-height:0;
   }
   .row1 > .card{ min-width:0; }
-  #weatherCard{ flex:1.05; }
+  #weatherCard{ flex:1.35; }
   #cameraCard{ flex:1; }
 
   .card{
@@ -194,36 +183,65 @@
     margin-bottom:1.6vw;
   }
   .weather-now .icon{
-    font-size:6.5vw;
+    font-size:8vw;
     line-height:1;
     filter:drop-shadow(0 0 20px rgba(255,255,255,0.08));
   }
   .weather-now .temp{
-    font-size:5vw;
+    font-size:6.5vw;
     font-weight:700;
     line-height:1;
   }
   .weather-now .temp sup{
-    font-size:2vw;
+    font-size:2.4vw;
     font-weight:500;
     color:var(--muted);
   }
   .weather-now .desc{
-    font-size:1.3vw;
+    font-size:1.6vw;
     color:var(--text);
     margin-top:.3vw;
   }
   .weather-now .meta{
-    font-size:1vw;
+    font-size:1.05vw;
     color:var(--muted);
-    margin-top:.4vw;
+    margin-top:.5vw;
     display:flex;
     gap:1.2vw;
   }
 
+  /* Tagesverlauf: Vormittag / Mittag / Abend */
+  .dayparts{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:.8vw;
+    margin-bottom:.8vw;
+  }
+  .daypart{
+    background:rgba(255,255,255,0.03);
+    border:1px solid var(--card-border);
+    border-radius:1vw;
+    padding:.8vw .5vw;
+    text-align:center;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:.35vw;
+  }
+  .daypart .d{
+    font-size:.9vw;
+    color:var(--accent3);
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    font-weight:600;
+  }
+  .daypart .ic{ font-size:1.9vw; }
+  .daypart .hi{ font-size:1.05vw; font-weight:700; }
+
   .forecast{
     display:grid;
-    grid-template-columns:repeat(5,1fr);
+    grid-template-columns:repeat(3,1fr);
     gap:.8vw;
     flex:1;
   }
@@ -246,9 +264,9 @@
     letter-spacing:.05em;
     font-weight:600;
   }
-  .fday .ic{ font-size:2.4vw; }
-  .fday .hi{ font-size:1.15vw; font-weight:700; }
-  .fday .lo{ font-size:1vw; color:var(--muted); }
+  .fday .ic{ font-size:2.6vw; }
+  .fday .hi{ font-size:1.3vw; font-weight:700; }
+  .fday .lo{ font-size:1.1vw; color:var(--muted); }
 
   /* KAMERA (rechts in row1) */
   .cam-wrap{
@@ -312,7 +330,7 @@
     display:flex;
     align-items:center;
     width:max-content;
-    animation:ticker-ltr 55s linear infinite;
+    animation:ticker-ltr 110s linear infinite;
   }
   .ticker-track.paused{ animation-play-state:paused; }
   @keyframes ticker-ltr{
@@ -365,12 +383,9 @@
   <div class="glow c"></div>
 
   <header>
-    <div class="brand">
-      <div class="place">Braunlage · Harz</div>
-      <div class="sub" id="greeting">Live Dashboard</div>
-    </div>
     <div class="clockblock">
       <div class="clock" id="clock">--:--</div>
+      <div class="greeting" id="greeting">Hallo, Jan</div>
       <div class="datestr" id="datestr">wird geladen…</div>
     </div>
   </header>
@@ -387,6 +402,7 @@
             <div class="meta" id="wMeta"></div>
           </div>
         </div>
+        <div class="dayparts" id="dayparts"></div>
         <div class="forecast" id="forecast"></div>
       </section>
 
@@ -461,9 +477,21 @@
     return fetch(url, { signal: ctrl.signal }).finally(() => clearTimeout(t));
   }
 
+  function isSameDay(d1, d2){
+    return d1.getFullYear()===d2.getFullYear() && d1.getMonth()===d2.getMonth() && d1.getDate()===d2.getDate();
+  }
+  function hourlyIndexForToday(hourlyTimes, hour){
+    const now = new Date();
+    for(let i=0;i<hourlyTimes.length;i++){
+      const t = new Date(hourlyTimes[i]);
+      if(isSameDay(t, now) && t.getHours() === hour) return i;
+    }
+    return -1;
+  }
+
   async function loadWeather(){
     try{
-      const url = 'https://api.open-meteo.com/v1/forecast?latitude=51.7280&longitude=10.5987&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Europe%2FBerlin&forecast_days=6';
+      const url = 'https://api.open-meteo.com/v1/forecast?latitude=51.7280&longitude=10.5987&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Europe%2FBerlin&forecast_days=4';
       const res = await fetchWithTimeout(url);
       if(!res.ok) throw new Error('HTTP ' + res.status);
       const data = await res.json();
@@ -476,10 +504,39 @@
       document.getElementById('wMeta').innerHTML =
         'Gefühlt ' + Math.round(cur.apparent_temperature) + '°C &nbsp;·&nbsp; Wind ' + Math.round(cur.wind_speed_10m) + ' km/h &nbsp;·&nbsp; Luftfeuchte ' + cur.relative_humidity_2m + '%';
 
+      // Tagesverlauf heute: Vormittag / Mittag / Abend
+      const hourly = data.hourly;
+      const dayparts = [
+        { label:'Vormittag', hour:9 },
+        { label:'Mittag', hour:13 },
+        { label:'Abend', hour:19 }
+      ];
+      const dpEl = document.getElementById('dayparts');
+      dpEl.innerHTML = '';
+      if(hourly && hourly.time){
+        dayparts.forEach(dp => {
+          const idx = hourlyIndexForToday(hourly.time, dp.hour);
+          const div = document.createElement('div');
+          div.className = 'daypart';
+          if(idx >= 0){
+            const [dpIcon] = wmoInfo(hourly.weather_code[idx]);
+            div.innerHTML = `
+              <div class="d">${dp.label}</div>
+              <div class="ic">${dpIcon}</div>
+              <div class="hi">${Math.round(hourly.temperature_2m[idx])}°</div>
+            `;
+          } else {
+            div.innerHTML = `<div class="d">${dp.label}</div><div class="ic">—</div>`;
+          }
+          dpEl.appendChild(div);
+        });
+      }
+
+      // 3-Tage-Vorschau (ohne heute)
       const daily = data.daily;
       const forecastEl = document.getElementById('forecast');
       forecastEl.innerHTML = '';
-      for(let i=1;i<Math.min(daily.time.length,6);i++){
+      for(let i=1;i<Math.min(daily.time.length,4);i++){
         const d = new Date(daily.time[i]);
         const [dicon] = wmoInfo(daily.weather_code[i]);
         const div = document.createElement('div');
