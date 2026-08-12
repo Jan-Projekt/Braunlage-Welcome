@@ -177,55 +177,87 @@
     50%{ opacity:.35; }
   }
 
-  /* WEATHER */
+  /* WEATHER
+     Wichtig: alle drei Zeilen (Jetzt / Tagesverlauf / Vorschau) haben bewusst
+     KONSERVATIVE, feste Größen, die mit deutlichem Sicherheitsabstand in die
+     Karte passen — lieber etwas Luft am Ende der Karte als abgeschnittener
+     oder überlappender Text. Wenn noch sichtbar Platz übrig ist, lieber
+     nochmal in kleinen Schritten vergrößern statt wieder alles auf einmal. */
   .weather-now{
     display:flex;
     align-items:center;
-    gap:1.3vw;
-    padding-bottom:1vw;
+    gap:1.1vw;
+    padding-bottom:.8vw;
     border-bottom:1px solid var(--card-border);
-    margin-bottom:1vw;
+    margin-bottom:.8vw;
     flex:0 0 auto;
   }
   .weather-now .icon{
-    font-size:6.8vw;
+    font-size:5.4vw;
     line-height:1;
     filter:drop-shadow(0 0 20px rgba(255,255,255,0.08));
   }
   .weather-now .temp{
-    font-size:5.6vw;
+    font-size:4.4vw;
     font-weight:700;
     line-height:1;
   }
   .weather-now .temp sup{
-    font-size:2vw;
+    font-size:1.7vw;
     font-weight:500;
     color:var(--muted);
   }
   .weather-now .desc{
-    font-size:1.35vw;
+    font-size:1.2vw;
     color:var(--text);
-    margin-top:.25vw;
+    margin-top:.2vw;
   }
   .weather-now .meta{
-    font-size:.95vw;
+    font-size:.85vw;
     color:var(--muted);
-    margin-top:.4vw;
+    margin-top:.35vw;
     display:flex;
-    gap:1.2vw;
+    gap:1.1vw;
   }
 
-  /* Tagesverlauf: Vormittag / Mittag / Abend */
+  /* Tagesverlauf: Vormittag / Mittag / Abend — feste, kompakte Höhe */
   .dayparts{
     display:grid;
     grid-template-columns:repeat(3,1fr);
-    grid-template-rows:1fr;
     gap:.6vw;
-    margin-bottom:.9vw;
-    flex:1;
-    min-height:0;
+    margin-bottom:.7vw;
+    flex:0 0 auto;
   }
   .daypart{
+    background:rgba(255,255,255,0.03);
+    border:1px solid var(--card-border);
+    border-radius:.8vw;
+    padding:.45vw .5vw;
+    text-align:center;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:.3vw;
+  }
+  .daypart .d{
+    font-size:.75vw;
+    color:var(--accent3);
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    font-weight:600;
+  }
+  .daypart .ic{ font-size:1.5vw; }
+  .daypart .hi{ font-size:.95vw; font-weight:700; }
+
+  /* 3-Tage-Vorschau — feste, kompakte Höhe */
+  .forecast{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:.6vw;
+    flex:0 0 auto;
+  }
+  .fday{
     background:rgba(255,255,255,0.03);
     border:1px solid var(--card-border);
     border-radius:.8vw;
@@ -235,52 +267,23 @@
     flex-direction:column;
     align-items:center;
     justify-content:center;
-    gap:.4vw;
-    min-height:0;
-    overflow:hidden;
-  }
-  .daypart .d{
-    font-size:.9vw;
-    color:var(--accent3);
-    text-transform:uppercase;
-    letter-spacing:.05em;
-    font-weight:600;
-  }
-  .daypart .ic{ font-size:2.2vw; }
-  .daypart .hi{ font-size:1.15vw; font-weight:700; }
-
-  .forecast{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    grid-template-rows:1fr;
-    gap:.6vw;
-    flex:1;
-    min-height:0;
-  }
-  .fday{
-    background:rgba(255,255,255,0.03);
-    border:1px solid var(--card-border);
-    border-radius:.8vw;
-    padding:.6vw .5vw;
-    text-align:center;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap:.4vw;
-    min-height:0;
-    overflow:hidden;
+    gap:.3vw;
   }
   .fday .d{
-    font-size:.95vw;
+    font-size:.8vw;
     color:var(--muted);
     text-transform:uppercase;
     letter-spacing:.05em;
     font-weight:600;
   }
-  .fday .ic{ font-size:2.4vw; }
-  .fday .hi{ font-size:1.2vw; font-weight:700; }
-  .fday .lo{ font-size:1vw; color:var(--muted); }
+  .fday .ic{ font-size:1.7vw; }
+  .fday .hi{ font-size:1vw; font-weight:700; }
+  .fday .lo{ font-size:.85vw; color:var(--muted); }
+
+  /* Falls trotz konservativer Größen doch mal zu wenig Platz ist: Rest der
+     Karte wird nach unten zentriert statt oben zu kleben, sieht ausgewogener
+     aus als eine Lücke ganz unten. */
+  #weatherCard{ justify-content:center; }
 
   /* KAMERA (rechts in row1) */
   .cam-wrap{
