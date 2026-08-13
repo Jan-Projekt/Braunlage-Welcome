@@ -54,7 +54,7 @@
   }
   @media (orientation:portrait){
     .rotate-warning{ display:flex; }
-    main, header, footer{ display:none !important; }
+    main, footer{ display:none !important; }
   }
   @media print{
     @page{ size:landscape; margin:0; }
@@ -76,38 +76,6 @@
   .glow.a{ width:40vw; height:40vw; top:-15vw; left:-10vw; background:var(--accent2); }
   .glow.b{ width:35vw; height:35vw; bottom:-15vw; right:-10vw; background:var(--accent); }
   .glow.c{ width:25vw; height:25vw; top:40%; left:60%; background:var(--accent3); opacity:0.08; }
-  header{
-    position:relative;
-    z-index:1;
-    display:flex;
-    justify-content:flex-end;
-    align-items:flex-end;
-    padding-bottom:1.1vw;
-    flex:0 0 auto;
-  }
-  .clockblock{
-    text-align:right;
-  }
-  .clock{
-    font-size:5.6vw;
-    font-weight:700;
-    line-height:1;
-    letter-spacing:.01em;
-    font-variant-numeric:tabular-nums;
-  }
-  .greeting{
-    font-size:1.5vw;
-    font-weight:600;
-    color:var(--accent);
-    margin-top:.5vw;
-  }
-  .datestr{
-    font-size:1.1vw;
-    color:var(--text);
-    font-weight:700;
-    margin-top:.2vw;
-    text-transform:capitalize;
-  }
   /* Layout bewusst mit Flexbox statt CSS-Grid-Autoplacement gebaut,
      damit es auch auf schwächeren/eingebauten Browsern (z.B. Beamer-App) zuverlässig
      nicht überlappt. */
@@ -133,7 +101,7 @@
     background:linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.01));
     border:1px solid var(--card-border);
     border-radius:1.4vw;
-    padding:1.6vw 1.8vw;
+    padding:2.2vw 2.4vw;
     display:flex;
     flex-direction:column;
     min-height:0;
@@ -177,35 +145,34 @@
     display:flex;
     align-items:center;
     gap:1.4vw;
-    padding-bottom:1vw;
+    padding-bottom:1.4vw;
     border-bottom:1px solid var(--card-border);
-    margin-bottom:1vw;
     flex:0 0 auto;
   }
   .weather-now .icon{
-    font-size:6.8vw;
+    font-size:8vw;
     line-height:1;
     filter:drop-shadow(0 0 20px rgba(255,255,255,0.08));
   }
   .weather-now .temp{
-    font-size:5.6vw;
+    font-size:6.6vw;
     font-weight:700;
     line-height:1;
   }
   .weather-now .temp sup{
-    font-size:2.1vw;
+    font-size:2.5vw;
     font-weight:500;
     color:var(--muted);
   }
   .weather-now .desc{
-    font-size:1.5vw;
+    font-size:1.75vw;
     color:var(--text);
     margin-top:.3vw;
   }
   .weather-now .meta{
-    font-size:1.05vw;
+    font-size:1.2vw;
     color:var(--muted);
-    margin-top:.4vw;
+    margin-top:.5vw;
     display:flex;
     gap:1.3vw;
   }
@@ -213,64 +180,64 @@
   .dayparts{
     display:grid;
     grid-template-columns:repeat(3,1fr);
-    gap:.8vw;
-    margin-bottom:.9vw;
+    gap:1vw;
     flex:0 0 auto;
   }
   .daypart{
     background:rgba(255,255,255,0.03);
     border:1px solid var(--card-border);
-    border-radius:.8vw;
-    padding:.6vw .6vw;
+    border-radius:1vw;
+    padding:1.6vw .8vw;
     text-align:center;
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
-    gap:.35vw;
+    gap:.55vw;
   }
   .daypart .d{
-    font-size:.9vw;
+    font-size:1.05vw;
     color:var(--accent3);
     text-transform:uppercase;
     letter-spacing:.05em;
     font-weight:600;
   }
-  .daypart .ic{ font-size:1.9vw; }
-  .daypart .hi{ font-size:1.15vw; font-weight:700; }
-  /* 3-Tage-Vorschau — feste, kompakte Höhe */
+  .daypart .ic{ font-size:3vw; }
+  .daypart .hi{ font-size:1.7vw; font-weight:700; }
+  /* 3-Tage-Vorschau */
   .forecast{
     display:grid;
     grid-template-columns:repeat(3,1fr);
-    gap:.8vw;
+    gap:1vw;
     flex:0 0 auto;
   }
   .fday{
     background:rgba(255,255,255,0.03);
     border:1px solid var(--card-border);
-    border-radius:.8vw;
-    padding:.65vw .6vw;
+    border-radius:1vw;
+    padding:1.7vw .8vw;
     text-align:center;
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
-    gap:.35vw;
+    gap:.55vw;
   }
   .fday .d{
-    font-size:.95vw;
+    font-size:1.1vw;
     color:var(--muted);
     text-transform:uppercase;
     letter-spacing:.05em;
     font-weight:600;
   }
-  .fday .ic{ font-size:2.1vw; }
-  .fday .hi{ font-size:1.25vw; font-weight:700; }
-  .fday .lo{ font-size:1.05vw; color:var(--muted); }
-  /* Falls trotz konservativer Größen doch mal zu wenig Platz ist: Rest der
-     Karte wird nach unten zentriert statt oben zu kleben, sieht ausgewogener
-     aus als eine Lücke ganz unten. */
-  #weatherCard{ justify-content:center; }
+  .fday .ic{ font-size:3.3vw; }
+  .fday .hi{ font-size:1.8vw; font-weight:700; }
+  .fday .lo{ font-size:1.4vw; color:var(--muted); }
+  /* Vier Blöcke (Titel/Jetzt/Tagesverlauf/Vorschau) werden gleichmäßig über die
+     volle Kartenhöhe verteilt, damit der jetzt viel größere Platz (kein Header
+     mehr oben, keine Kamera daneben) auch wirklich ausgefüllt wird statt als
+     Leerraum stehen zu bleiben. */
+  #weatherCard{ justify-content:space-between; }
   /* NEWS-TICKER (unten, läuft durch) */
   .ticker-card{
     flex:0 0 auto;
@@ -337,10 +304,41 @@
     flex:0 0 auto;
     display:flex;
     justify-content:space-between;
+    align-items:flex-end;
     font-size:.85vw;
     color:var(--muted);
   }
+  .footer-info{
+    display:flex;
+    flex-direction:column;
+    gap:.25vw;
+  }
   .updated{ opacity:.8; }
+  .footer-clock{
+    text-align:right;
+    flex:0 0 auto;
+  }
+  .footer-clock .clock{
+    font-size:2.3vw;
+    font-weight:700;
+    line-height:1;
+    color:var(--text);
+    letter-spacing:.01em;
+    font-variant-numeric:tabular-nums;
+  }
+  .footer-clock .greeting{
+    font-size:.9vw;
+    font-weight:600;
+    color:var(--accent);
+    margin-top:.3vw;
+  }
+  .footer-clock .datestr{
+    font-size:.8vw;
+    color:var(--muted);
+    font-weight:600;
+    margin-top:.15vw;
+    text-transform:capitalize;
+  }
 </style>
 </head>
 <body>
@@ -353,13 +351,6 @@
   <div class="glow a"></div>
   <div class="glow b"></div>
   <div class="glow c"></div>
-  <header>
-    <div class="clockblock">
-      <div class="clock" id="clock">--:--</div>
-      <div class="greeting" id="greeting">Hallo, Jan</div>
-      <div class="datestr" id="datestr">wird geladen…</div>
-    </div>
-  </header>
   <main>
     <div class="row1">
       <section class="card" id="weatherCard">
@@ -386,8 +377,15 @@
     </div>
   </main>
   <footer>
-    <div>Automatische Aktualisierung · Wetter alle 15 Min · News alle 5 Min · Uhrzeit-Sync stündlich</div>
-    <div class="updated" id="updated"></div>
+    <div class="footer-info">
+      <div>Automatische Aktualisierung · Wetter alle 15 Min · News alle 5 Min · Uhrzeit-Sync stündlich</div>
+      <div class="updated" id="updated"></div>
+    </div>
+    <div class="footer-clock">
+      <div class="clock" id="clock">--:--</div>
+      <div class="greeting" id="greeting">Hallo, Jan</div>
+      <div class="datestr" id="datestr">wird geladen…</div>
+    </div>
   </footer>
 <script>
   // ---------- CLOCK ----------
@@ -397,7 +395,6 @@
   // (timeOffsetMs) und rechnen die danach jede Sekunde einfach oben drauf,
   // statt dauerhaft zu pollen. Stündlicher Re-Sync gleicht eventuelle Drift aus.
   let timeOffsetMs = 0;
-  const weekdays = ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
   const months = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
   function pad(n){ return n.toString().padStart(2,'0'); }
   function greetingFor(hour){
@@ -405,23 +402,59 @@
     if(hour >= 11 && hour < 18) return 'Hallo, Jan';
     return 'Guten Abend, Jan';
   }
-  function updateClock(){
-    const now = new Date(Date.now() + timeOffsetMs);
-    document.getElementById('clock').textContent = pad(now.getHours()) + ':' + pad(now.getMinutes());
-    document.getElementById('datestr').textContent =
-      weekdays[now.getDay()] + ', ' + now.getDate() + '. ' + months[now.getMonth()] + ' ' + now.getFullYear();
-    document.getElementById('greeting').textContent = greetingFor(now.getHours());
+  // Anzeige bewusst IMMER über Intl mit fest eingestellter timeZone:'Europe/Berlin'
+  // formatiert – dadurch ist die Anzeige unabhängig davon, wie die
+  // Systemzeitzone des Anzeigegeräts eingestellt ist (das war der eigentliche Bug:
+  // vorher wurden die von der Zeit-API gelieferten Zahlen mit new Date(y,m,d,h,min,s)
+  // als Gerätezeitzone interpretiert statt als Europe/Berlin — bei falsch eingestelltem
+  // Gerät kam dann eine falsche Uhrzeit raus).
+  const berlinPartsFmt = new Intl.DateTimeFormat('de-DE', {
+    timeZone:'Europe/Berlin',
+    year:'numeric', month:'2-digit', day:'2-digit',
+    hour:'2-digit', minute:'2-digit', hour12:false
+  });
+  const berlinWeekdayFmt = new Intl.DateTimeFormat('de-DE', { timeZone:'Europe/Berlin', weekday:'long' });
+  function berlinParts(date){
+    const o = {};
+    berlinPartsFmt.formatToParts(date).forEach(p => { if(p.type !== 'literal') o[p.type] = p.value; });
+    return o;
   }
+  function berlinNow(){
+    const d = new Date(Date.now() + timeOffsetMs);
+    const p = berlinParts(d);
+    return { year:+p.year, month:+p.month, day:+p.day, hour:+p.hour, minute:+p.minute, raw:d };
+  }
+  function updateClock(){
+    const now = berlinNow();
+    document.getElementById('clock').textContent = pad(now.hour) + ':' + pad(now.minute);
+    document.getElementById('datestr').textContent =
+      berlinWeekdayFmt.format(now.raw) + ', ' + now.day + '. ' + months[now.month - 1] + ' ' + now.year;
+    document.getElementById('greeting').textContent = greetingFor(now.hour);
+  }
+  // Zeit-Sync: fragt bewusst die UTC-Zeit ab (nicht direkt Europe/Berlin), damit die
+  // Berechnung des Offsets zu Date.now() komplett zeitzonen-unabhängig ist (Date.UTC
+  // liefert einen eindeutigen Zeitstempel, unabhängig von der Gerätezeitzone). Zwei
+  // unabhängige Anbieter als Fallback, falls einer der beiden mal down ist.
   async function syncTime(){
     try{
-      const res = await fetchWithTimeout('https://timeapi.io/api/Time/current/zone?timeZone=Europe%2FBerlin');
+      const res = await fetchWithTimeout('https://timeapi.io/api/Time/current/zone?timeZone=UTC', 8000);
       if(!res.ok) throw new Error('HTTP ' + res.status);
       const data = await res.json();
-      // timeapi.io liefert u.a. { year, month, day, hour, minute, seconds, ... } in der Zielzeitzone
-      const serverDate = new Date(data.year, data.month - 1, data.day, data.hour, data.minute, data.seconds);
-      timeOffsetMs = serverDate.getTime() - Date.now();
+      const serverUtcMs = Date.UTC(data.year, data.month - 1, data.day, data.hour, data.minute, data.seconds, data.milliSeconds || 0);
+      if(isNaN(serverUtcMs)) throw new Error('Ungültige Zeitantwort (timeapi.io)');
+      timeOffsetMs = serverUtcMs - Date.now();
+      return;
     }catch(e){
-      console.error('Zeit-Sync fehlgeschlagen, nutze zuletzt bekannten Offset', e);
+      console.warn('Zeit-Sync über timeapi.io fehlgeschlagen, versuche Fallback', e);
+    }
+    try{
+      const res2 = await fetchWithTimeout('https://worldtimeapi.org/api/timezone/Etc/UTC', 8000);
+      if(!res2.ok) throw new Error('HTTP ' + res2.status);
+      const data2 = await res2.json();
+      if(typeof data2.unixtime !== 'number') throw new Error('Ungültige Zeitantwort (worldtimeapi.org)');
+      timeOffsetMs = (data2.unixtime * 1000) - Date.now();
+    }catch(e2){
+      console.error('Zeit-Sync komplett fehlgeschlagen, nutze zuletzt bekannten Offset', e2);
     }
   }
   syncTime();
@@ -449,14 +482,16 @@
     const t = setTimeout(() => ctrl.abort(), ms);
     return fetch(url, { signal: ctrl.signal }).finally(() => clearTimeout(t));
   }
-  function isSameDay(d1, d2){
-    return d1.getFullYear()===d2.getFullYear() && d1.getMonth()===d2.getMonth() && d1.getDate()===d2.getDate();
-  }
+  // Open-Meteo liefert die Stunden-Zeitstempel als reinen Text ohne Zeitzonen-Offset
+  // (z.B. "2026-08-13T09:00"), bereits in Europe/Berlin (siehe timezone=Europe%2FBerlin
+  // im Request). Wir parsen das bewusst als Text statt über new Date(...), sonst würde
+  // JS die Zahlen wieder fälschlich als Gerätezeitzone interpretieren.
   function hourlyIndexForToday(hourlyTimes, hour){
-    const now = new Date(Date.now() + timeOffsetMs);
+    const now = berlinNow();
     for(let i=0;i<hourlyTimes.length;i++){
-      const t = new Date(hourlyTimes[i]);
-      if(isSameDay(t, now) && t.getHours() === hour) return i;
+      const t = hourlyTimes[i];
+      const y = +t.slice(0,4), mo = +t.slice(5,7), da = +t.slice(8,10), hh = +t.slice(11,13);
+      if(y===now.year && mo===now.month && da===now.day && hh===hour) return i;
     }
     return -1;
   }
@@ -505,12 +540,15 @@
       const forecastEl = document.getElementById('forecast');
       forecastEl.innerHTML = '';
       for(let i=1;i<Math.min(daily.time.length,4);i++){
-        const d = new Date(daily.time[i]);
+        // Datumsstring (z.B. "2026-08-14") bewusst per Hand geparst und mit getUTCDay()
+        // statt getDay() ausgewertet, damit die Gerätezeitzone auch hier keine Rolle spielt.
+        const [dy, dm, dd] = daily.time[i].split('-').map(Number);
+        const weekdayIdx = new Date(Date.UTC(dy, dm - 1, dd)).getUTCDay();
         const [dicon] = wmoInfo(daily.weather_code[i]);
         const div = document.createElement('div');
         div.className = 'fday';
         div.innerHTML = `
-          <div class="d">${shortDay[d.getDay()]}</div>
+          <div class="d">${shortDay[weekdayIdx]}</div>
           <div class="ic">${dicon}</div>
           <div class="hi">${Math.round(daily.temperature_2m_max[i])}°</div>
           <div class="lo">${Math.round(daily.temperature_2m_min[i])}°</div>
@@ -552,8 +590,8 @@
     }
   }
   function bumpUpdated(){
-    const now = new Date(Date.now() + timeOffsetMs);
-    document.getElementById('updated').textContent = 'Zuletzt aktualisiert: ' + pad(now.getHours()) + ':' + pad(now.getMinutes());
+    const now = berlinNow();
+    document.getElementById('updated').textContent = 'Zuletzt aktualisiert: ' + pad(now.hour) + ':' + pad(now.minute);
   }
   loadWeather();
   loadNews();
