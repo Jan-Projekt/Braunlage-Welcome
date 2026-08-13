@@ -37,7 +37,6 @@
     flex-direction:column;
     padding:2.2vw 2.4vw;
   }
-
   /* Falls JavaScript nicht läuft: deutlicher Hinweis statt stiller weißer Fläche */
   noscript{
     position:fixed; inset:0; z-index:999;
@@ -45,7 +44,6 @@
     display:flex; align-items:center; justify-content:center;
     font-size:1.6vw; text-align:center; padding:4vw;
   }
-
   /* Hochformat-Warnung – Dashboard ist für Querformat gebaut */
   .rotate-warning{
     display:none;
@@ -58,7 +56,6 @@
     .rotate-warning{ display:flex; }
     main, header, footer{ display:none !important; }
   }
-
   @media print{
     @page{ size:landscape; margin:0; }
     html,body{
@@ -67,7 +64,6 @@
       color-adjust:exact !important;
     }
   }
-
   /* ambient glow background */
   .glow{
     position:fixed;
@@ -80,7 +76,6 @@
   .glow.a{ width:40vw; height:40vw; top:-15vw; left:-10vw; background:var(--accent2); }
   .glow.b{ width:35vw; height:35vw; bottom:-15vw; right:-10vw; background:var(--accent); }
   .glow.c{ width:25vw; height:25vw; top:40%; left:60%; background:var(--accent3); opacity:0.08; }
-
   header{
     position:relative;
     z-index:1;
@@ -113,7 +108,6 @@
     margin-top:.2vw;
     text-transform:capitalize;
   }
-
   /* Layout bewusst mit Flexbox statt CSS-Grid-Autoplacement gebaut,
      damit es auch auf schwächeren/eingebauten Browsern (z.B. Beamer-App) zuverlässig
      nicht überlappt. */
@@ -134,9 +128,7 @@
     min-height:0;
   }
   .row1 > .card{ min-width:0; }
-  #weatherCard{ flex:1.35; }
-  #cameraCard{ flex:1; }
-
+  #weatherCard{ flex:1; }
   .card{
     background:linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.01));
     border:1px solid var(--card-border);
@@ -149,12 +141,11 @@
     backdrop-filter:blur(10px);
     box-shadow:0 0 0 1px rgba(255,255,255,0.02), 0 20px 60px rgba(0,0,0,0.5);
   }
-
   .card-title{
     display:flex;
     align-items:center;
     gap:.6vw;
-    font-size:1.1vw;
+    font-size:1.3vw;
     font-weight:600;
     text-transform:uppercase;
     letter-spacing:.08em;
@@ -176,7 +167,6 @@
     0%,100%{ opacity:1; }
     50%{ opacity:.35; }
   }
-
   /* WEATHER
      Wichtig: alle drei Zeilen (Jetzt / Tagesverlauf / Vorschau) haben bewusst
      KONSERVATIVE, feste Größen, die mit deutlichem Sicherheitsabstand in die
@@ -186,134 +176,101 @@
   .weather-now{
     display:flex;
     align-items:center;
-    gap:1.1vw;
-    padding-bottom:.8vw;
+    gap:1.4vw;
+    padding-bottom:1vw;
     border-bottom:1px solid var(--card-border);
-    margin-bottom:.8vw;
+    margin-bottom:1vw;
     flex:0 0 auto;
   }
   .weather-now .icon{
-    font-size:5.4vw;
+    font-size:6.8vw;
     line-height:1;
     filter:drop-shadow(0 0 20px rgba(255,255,255,0.08));
   }
   .weather-now .temp{
-    font-size:4.4vw;
+    font-size:5.6vw;
     font-weight:700;
     line-height:1;
   }
   .weather-now .temp sup{
-    font-size:1.7vw;
+    font-size:2.1vw;
     font-weight:500;
     color:var(--muted);
   }
   .weather-now .desc{
-    font-size:1.2vw;
+    font-size:1.5vw;
     color:var(--text);
-    margin-top:.2vw;
+    margin-top:.3vw;
   }
   .weather-now .meta{
-    font-size:.85vw;
+    font-size:1.05vw;
     color:var(--muted);
-    margin-top:.35vw;
+    margin-top:.4vw;
     display:flex;
-    gap:1.1vw;
+    gap:1.3vw;
   }
-
   /* Tagesverlauf: Vormittag / Mittag / Abend — feste, kompakte Höhe */
   .dayparts{
     display:grid;
     grid-template-columns:repeat(3,1fr);
-    gap:.6vw;
-    margin-bottom:.7vw;
+    gap:.8vw;
+    margin-bottom:.9vw;
     flex:0 0 auto;
   }
   .daypart{
     background:rgba(255,255,255,0.03);
     border:1px solid var(--card-border);
     border-radius:.8vw;
-    padding:.45vw .5vw;
+    padding:.6vw .6vw;
     text-align:center;
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
-    gap:.3vw;
+    gap:.35vw;
   }
   .daypart .d{
-    font-size:.75vw;
+    font-size:.9vw;
     color:var(--accent3);
     text-transform:uppercase;
     letter-spacing:.05em;
     font-weight:600;
   }
-  .daypart .ic{ font-size:1.5vw; }
-  .daypart .hi{ font-size:.95vw; font-weight:700; }
-
+  .daypart .ic{ font-size:1.9vw; }
+  .daypart .hi{ font-size:1.15vw; font-weight:700; }
   /* 3-Tage-Vorschau — feste, kompakte Höhe */
   .forecast{
     display:grid;
     grid-template-columns:repeat(3,1fr);
-    gap:.6vw;
+    gap:.8vw;
     flex:0 0 auto;
   }
   .fday{
     background:rgba(255,255,255,0.03);
     border:1px solid var(--card-border);
     border-radius:.8vw;
-    padding:.5vw .5vw;
+    padding:.65vw .6vw;
     text-align:center;
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
-    gap:.3vw;
+    gap:.35vw;
   }
   .fday .d{
-    font-size:.8vw;
+    font-size:.95vw;
     color:var(--muted);
     text-transform:uppercase;
     letter-spacing:.05em;
     font-weight:600;
   }
-  .fday .ic{ font-size:1.7vw; }
-  .fday .hi{ font-size:1vw; font-weight:700; }
-  .fday .lo{ font-size:.85vw; color:var(--muted); }
-
+  .fday .ic{ font-size:2.1vw; }
+  .fday .hi{ font-size:1.25vw; font-weight:700; }
+  .fday .lo{ font-size:1.05vw; color:var(--muted); }
   /* Falls trotz konservativer Größen doch mal zu wenig Platz ist: Rest der
      Karte wird nach unten zentriert statt oben zu kleben, sieht ausgewogener
      aus als eine Lücke ganz unten. */
   #weatherCard{ justify-content:center; }
-
-  /* KAMERA (rechts in row1) */
-  .cam-wrap{
-    position:relative;
-    flex:1;
-    min-height:0;
-    border-radius:1vw;
-    overflow:hidden;
-    background:#000;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-  }
-  .cam-wrap img{
-    width:100%;
-    height:100%;
-    object-fit:contain;  /* zeigt das ganze Bild unverzerrt, Balken statt Beschnitt */
-    display:block;
-  }
-  .cam-badge{
-    position:absolute;
-    bottom:.7vw; right:.7vw;
-    background:rgba(0,0,0,0.55);
-    border:1px solid rgba(255,255,255,0.12);
-    border-radius:.6vw;
-    padding:.35vw .7vw;
-    font-size:.8vw;
-    color:var(--muted);
-  }
-
   /* NEWS-TICKER (unten, läuft durch) */
   .ticker-card{
     flex:0 0 auto;
@@ -373,7 +330,6 @@
     color:var(--muted);
     padding-right:3vw;
   }
-
   footer{
     position:relative;
     z-index:1;
@@ -384,23 +340,19 @@
     font-size:.85vw;
     color:var(--muted);
   }
-
   .updated{ opacity:.8; }
 </style>
 </head>
 <body>
-
   <noscript>Dieses Dashboard braucht aktiviertes JavaScript. Bitte in den Browser-Einstellungen aktivieren und neu laden.</noscript>
   <div class="rotate-warning">
     <div style="font-size:4vw;">↻</div>
     <div style="font-size:1.6vw;font-weight:600;">Bitte Gerät ins Querformat drehen</div>
     <div style="font-size:1vw;color:#8a92a0;">Dieses Dashboard ist für die Anzeige im Querformat (Landscape) gebaut.</div>
   </div>
-
   <div class="glow a"></div>
   <div class="glow b"></div>
   <div class="glow c"></div>
-
   <header>
     <div class="clockblock">
       <div class="clock" id="clock">--:--</div>
@@ -408,7 +360,6 @@
       <div class="datestr" id="datestr">wird geladen…</div>
     </div>
   </header>
-
   <main>
     <div class="row1">
       <section class="card" id="weatherCard">
@@ -424,16 +375,7 @@
         <div class="dayparts" id="dayparts"></div>
         <div class="forecast" id="forecast"></div>
       </section>
-
-      <section class="card" id="cameraCard">
-        <div class="card-title"><span class="dot live"></span> Live-Kamera · Volksbank Braunlage</div>
-        <div class="cam-wrap">
-          <img id="camImg" alt="Live-Webcam Braunlage (Volksbank, Blick zum Wurmberg)">
-          <div class="cam-badge" id="camUpdated">wird geladen…</div>
-        </div>
-      </section>
     </div>
-
     <div class="ticker-card" id="tickerCard">
       <div class="ticker-label">Tagesschau</div>
       <div class="ticker-viewport">
@@ -443,35 +385,49 @@
       </div>
     </div>
   </main>
-
   <footer>
-    <div>Automatische Aktualisierung · Wetter alle 15 Min · News alle 5 Min · Kamera alle 60 Sek</div>
+    <div>Automatische Aktualisierung · Wetter alle 15 Min · News alle 5 Min · Uhrzeit-Sync stündlich</div>
     <div class="updated" id="updated"></div>
   </footer>
-
 <script>
   // ---------- CLOCK ----------
+  // Uhrzeit kommt bewusst NICHT von der Systemuhr des Anzeigegeräts, sondern wird
+  // per Zeit-API aus dem Internet geholt (falls das Gerät z.B. keine korrekte
+  // Systemzeit/Zeitzone hat). Wir merken uns die Differenz zur lokalen Uhr
+  // (timeOffsetMs) und rechnen die danach jede Sekunde einfach oben drauf,
+  // statt dauerhaft zu pollen. Stündlicher Re-Sync gleicht eventuelle Drift aus.
+  let timeOffsetMs = 0;
   const weekdays = ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
   const months = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
-
   function pad(n){ return n.toString().padStart(2,'0'); }
-
   function greetingFor(hour){
     if(hour >= 5 && hour < 11) return 'Guten Morgen, Jan';
     if(hour >= 11 && hour < 18) return 'Hallo, Jan';
     return 'Guten Abend, Jan';
   }
-
   function updateClock(){
-    const now = new Date();
+    const now = new Date(Date.now() + timeOffsetMs);
     document.getElementById('clock').textContent = pad(now.getHours()) + ':' + pad(now.getMinutes());
     document.getElementById('datestr').textContent =
       weekdays[now.getDay()] + ', ' + now.getDate() + '. ' + months[now.getMonth()] + ' ' + now.getFullYear();
     document.getElementById('greeting').textContent = greetingFor(now.getHours());
   }
+  async function syncTime(){
+    try{
+      const res = await fetchWithTimeout('https://timeapi.io/api/Time/current/zone?timeZone=Europe%2FBerlin');
+      if(!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      // timeapi.io liefert u.a. { year, month, day, hour, minute, seconds, ... } in der Zielzeitzone
+      const serverDate = new Date(data.year, data.month - 1, data.day, data.hour, data.minute, data.seconds);
+      timeOffsetMs = serverDate.getTime() - Date.now();
+    }catch(e){
+      console.error('Zeit-Sync fehlgeschlagen, nutze zuletzt bekannten Offset', e);
+    }
+  }
+  syncTime();
   updateClock();
   setInterval(updateClock, 1000);
-
+  setInterval(syncTime, 60 * 60 * 1000);
   // ---------- WEATHER ----------
   const WMO = {
     0:['☀️','Klarer Himmel'], 1:['🌤️','Überwiegend klar'], 2:['⛅','Teilweise bewölkt'], 3:['☁️','Bedeckt'],
@@ -487,34 +443,29 @@
     95:['⛈️','Gewitter'], 96:['⛈️','Gewitter mit Hagel'], 99:['⛈️','Schweres Gewitter']
   };
   function wmoInfo(code){ return WMO[code] || ['🌡️','Unbekannt']; }
-
   const shortDay = ['So','Mo','Di','Mi','Do','Fr','Sa'];
-
   function fetchWithTimeout(url, ms=10000){
     const ctrl = new AbortController();
     const t = setTimeout(() => ctrl.abort(), ms);
     return fetch(url, { signal: ctrl.signal }).finally(() => clearTimeout(t));
   }
-
   function isSameDay(d1, d2){
     return d1.getFullYear()===d2.getFullYear() && d1.getMonth()===d2.getMonth() && d1.getDate()===d2.getDate();
   }
   function hourlyIndexForToday(hourlyTimes, hour){
-    const now = new Date();
+    const now = new Date(Date.now() + timeOffsetMs);
     for(let i=0;i<hourlyTimes.length;i++){
       const t = new Date(hourlyTimes[i]);
       if(isSameDay(t, now) && t.getHours() === hour) return i;
     }
     return -1;
   }
-
   async function loadWeather(){
     try{
       const url = 'https://api.open-meteo.com/v1/forecast?latitude=51.7280&longitude=10.5987&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Europe%2FBerlin&forecast_days=4';
       const res = await fetchWithTimeout(url);
       if(!res.ok) throw new Error('HTTP ' + res.status);
       const data = await res.json();
-
       const cur = data.current;
       const [icon, desc] = wmoInfo(cur.weather_code);
       document.getElementById('wIcon').textContent = icon;
@@ -522,7 +473,6 @@
       document.getElementById('wDesc').textContent = desc;
       document.getElementById('wMeta').innerHTML =
         'Gefühlt ' + Math.round(cur.apparent_temperature) + '°C &nbsp;·&nbsp; Wind ' + Math.round(cur.wind_speed_10m) + ' km/h &nbsp;·&nbsp; Luftfeuchte ' + cur.relative_humidity_2m + '%';
-
       // Tagesverlauf heute: Vormittag / Mittag / Abend
       const hourly = data.hourly;
       const dayparts = [
@@ -550,7 +500,6 @@
           dpEl.appendChild(div);
         });
       }
-
       // 3-Tage-Vorschau (ohne heute)
       const daily = data.daily;
       const forecastEl = document.getElementById('forecast');
@@ -575,7 +524,6 @@
       console.error(e);
     }
   }
-
   // ---------- NEWS-TICKER ----------
   async function loadNews(){
     try{
@@ -584,17 +532,14 @@
       const data = await res.json();
       const items = (data.news || []).filter(n => n.title && n.title.trim().length > 0).slice(0, 10);
       const track = document.getElementById('tickerTrack');
-
       if(items.length === 0){
         track.innerHTML = '<span class="ticker-item">Keine Nachrichten gefunden</span>';
         return;
       }
-
       const single = items.map(n => {
         const tag = (n.tag || n.ressort || 'News').toString();
         return `<span class="ticker-item"><span class="tag">${tag}</span> ${n.title}</span><span class="sep">●</span>`;
       }).join('');
-
       // Inhalt zweimal hintereinander für nahtlose Endlosschleife (CSS-Animation
       // verschiebt um -50%, danach ist Kopie 2 exakt an der Stelle von Kopie 1).
       track.innerHTML = single + single;
@@ -606,39 +551,14 @@
       console.error(e);
     }
   }
-
   function bumpUpdated(){
-    const now = new Date();
+    const now = new Date(Date.now() + timeOffsetMs);
     document.getElementById('updated').textContent = 'Zuletzt aktualisiert: ' + pad(now.getHours()) + ':' + pad(now.getMinutes());
   }
-
-  // ---------- LIVE-KAMERA (Volksbank Braunlage, Blick zum Wurmberg) ----------
-  // Quelle: https://www.vbbraunlage.de/meine-bank/webcam.html -> Standbild, wird von der
-  // Quelle selbst regelmäßig aktualisiert. Wir hängen einen Cache-Buster an, damit der
-  // Browser nicht das alte Bild aus dem Cache zeigt. object-fit:contain in CSS sorgt
-  // dafür, dass das Bild unverzerrt & vollständig angezeigt wird (Balken statt Beschnitt).
-  const CAM_URL = 'https://www.meinbraunlage.de/wc_vbbrl.jpg';
-
-  function loadCamera(){
-    const img = document.getElementById('camImg');
-    const badge = document.getElementById('camUpdated');
-    const test = new Image();
-    test.onload = () => {
-      img.src = test.src;
-      badge.textContent = 'Aktualisiert: ' + pad(new Date().getHours()) + ':' + pad(new Date().getMinutes());
-    };
-    test.onerror = () => {
-      badge.textContent = 'Kamera nicht erreichbar';
-    };
-    test.src = CAM_URL + (CAM_URL.includes('?') ? '&' : '?') + 't=' + Date.now();
-  }
-
   loadWeather();
   loadNews();
-  loadCamera();
   setInterval(loadWeather, 15 * 60 * 1000);
   setInterval(loadNews, 5 * 60 * 1000);
-  setInterval(loadCamera, 60 * 1000);
 </script>
 </body>
 </html>
